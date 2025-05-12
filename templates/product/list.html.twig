@@ -3,24 +3,72 @@
 {% block title %}Product List{% endblock %}
 
 {% block body %}
-    <h1>Product List</h1>
-    <div class="accordion" id="productAccordion">
-        {% for product in products %}
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading{{ product.id }}">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ product.id }}" aria-expanded="false" aria-controls="collapse{{ product.id }}">
-                        {{ product.name }} - {{ product.price }} €
-                    </button>
-                </h2>
-                <div id="collapse{{ product.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ product.id }}" data-bs-parent="#productAccordion">
-                    <div class="accordion-body">
-                        <strong>Description:</strong> {{ product.description }}<br>
-                        <strong>Created At:</strong> {{ product.createdAt ? product.createdAt|date('Y-m-d H:i') : '' }}
-                    </div>
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="display-5 fw-bold">Product List</h1>
+            <p class="text-muted">Manage and view your product inventory.</p>
+        </div>
+        <div class="col-md-4 text-md-end align-self-center">
+            <a href="{{ path('product_add') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-1"></i> Add New Product
+            </a>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Your Products</h5>
+                    <span class="badge bg-primary rounded-pill">{{ products|length }}</span>
+                </div>
+                <div class="card-body">
+                    {% if products|length > 0 %}
+                        <div class="accordion" id="productAccordion">
+                            {% for product in products %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading{{ product.id }}">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                                data-bs-target="#collapse{{ product.id }}" aria-expanded="false" 
+                                                aria-controls="collapse{{ product.id }}">
+                                            <div class="d-flex justify-content-between align-items-center w-100 me-3">
+                                                <span><strong>{{ product.name }}</strong></span>
+                                                <span class="badge bg-info text-dark">{{ product.price|format_currency('EUR') }}</span>
+                                            </div>
+                                        </button>
+                                    </h2>
+                                    <div id="collapse{{ product.id }}" class="accordion-collapse collapse" 
+                                        aria-labelledby="heading{{ product.id }}" data-bs-parent="#productAccordion">
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <p class="mb-2"><strong>Description:</strong></p>
+                                                    <p class="mb-3">{{ product.description }}</p>
+                                                    <p class="mb-0 text-muted">
+                                                        <small>Created: {{ product.createdAt ? product.createdAt|date('d M Y H:i') : 'N/A' }}</small>
+                                                    </p>
+                                                </div>
+                                                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                                                    <div class="btn-group" role="group">
+                                                        <button type="button" class="btn btn-sm btn-outline-primary">Edit</button>
+                                                        <button type="button" class="btn btn-sm btn-outline-danger">Delete</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <p class="mb-0">No products found. <a href="{{ path('product_add') }}">Add your first product</a>.</p>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
-        {% else %}
-            <div>No products found.</div>
-        {% endfor %}
+        </div>
     </div>
+</div>
 {% endblock %}
